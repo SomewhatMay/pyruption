@@ -5,8 +5,12 @@ import { AUTO, Game } from "phaser";
 //  https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
 const config: Phaser.Types.Core.GameConfig = {
   type: AUTO,
-  width: 1920,
-  height: 768,
+  width: window.innerWidth,
+  height: window.innerHeight,
+  scale: {
+    mode: Phaser.Scale.RESIZE,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+  },
   parent: "game-container",
   backgroundColor: "rgba(0,0,0,0)",
   scene: [Boot],
