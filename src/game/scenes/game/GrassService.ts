@@ -44,9 +44,7 @@ export class GrassService {
   setFire(grassInfo: Grass) {
     if (grassInfo.state === "burning") return;
 
-    if (grassInfo.image) {
-      grassInfo.image.destroy();
-    }
+    grassInfo.image?.destroy();
 
     grassInfo.state = "burning";
     grassInfo.image = this.boot.add
@@ -55,6 +53,17 @@ export class GrassService {
         grassInfo.y * GRASS_SIZE,
         "burning-grass"
       )
+      .setOrigin(0, 0);
+  }
+
+  extingwishFire(grassInfo: Grass) {
+    if (grassInfo.state !== "burning") return;
+
+    grassInfo.image?.destroy();
+
+    grassInfo.state = "alive";
+    grassInfo.image = this.boot.add
+      .image(grassInfo.x * GRASS_SIZE, grassInfo.y * GRASS_SIZE, "grass")
       .setOrigin(0, 0);
   }
 
@@ -122,5 +131,13 @@ export class GrassService {
         }
       }
     }
+    this.boot.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+      const grassInfo =
+        this.grassMap[Math.floor(pointer.x / GRASS_SIZE)][
+          Math.floor(pointer.y / GRASS_SIZE)
+        ];
+
+      this.extingwishFire(grassInfo);
+    });
   }
 }
