@@ -1,3 +1,4 @@
+import { getRandint } from "../../../lib/get-randint";
 import { Boot } from "../Boot";
 
 type GrassState = "alive" | "burning" | "dead";
@@ -11,8 +12,9 @@ type Grass = {
 
 const GRASS_SIZE = 32; // px, length and width (square)
 
-const INITIAL_FIRE_PROBABILITY = 0.1;
-const FIRE_PROBABILITY_INCREASE_RATE = 1.1;
+const INITIAL_FIRE_PROBABILITY = 0.01;
+const FIRE_PROBABILITY_INCREASE_RATE = 1.05;
+const FIRE_PROBABILITY_MAX = 0.1;
 
 export class GrassService {
   private grassMap: Grass[][];
@@ -40,10 +42,13 @@ export class GrassService {
   }
 
   setFire(grassInfo: Grass) {
+    if (grassInfo.state === "burning") return;
+
     if (grassInfo.image) {
       grassInfo.image.destroy();
     }
 
+    grassInfo.state = "burning";
     grassInfo.image = this.boot.add
       .image(
         grassInfo.x * GRASS_SIZE,
@@ -54,8 +59,49 @@ export class GrassService {
   }
 
   update() {
-    if (Math.random() > this.fireProbability) {
-      // Start a fire!
+    if (Math.random() < this.fireProbability) {
+      // Pick a random grass block
+
+      const x = getRandint(0, 32);
+      const y = getRandint(0, 32);
+
+      this.setFire(this.grassMap[x][y]);
+
+      // Increase the speed at which fire catches
+      this.fireProbability = Math.min(
+        this.fireProbability * FIRE_PROBABILITY_INCREASE_RATE,
+        FIRE_PROBABILITY_MAX
+      );
+    }
+
+    // Spread fire
+    for (let x = 0; x < this.grassMap.length; x++) {
+      for (let y = 0; y < this.grassMap[x].length; y++) {
+        if (Math.random() > this.fireProbability) continue;
+        const grassInfo = this.grassMap[x][y];
+
+        if (grassInfo.state === "burning") {
+          for (let dx = -1; dx <= 1; dx++) {
+            for (let dy = -1; dy <= 1; dy++) {
+              if (Math.random() > this.fireProbability) continue;
+
+              if (dx === 0 && dy === 0) continue; // skip self
+
+              const nx = x + dx;
+              const ny = y + dy;
+
+              if (
+                nx >= 0 &&
+                ny >= 0 &&
+                nx < this.grassMap.length &&
+                ny < this.grassMap[nx].length
+              ) {
+                this.setFire(this.grassMap[nx][ny]);
+              }
+            }
+          }
+        }
+      }
     }
   }
 
