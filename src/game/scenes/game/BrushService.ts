@@ -2,7 +2,7 @@ import { clamp } from "../../../lib/clamp";
 import { Boot } from "../Boot";
 import { CURSOR_DEFAULT_SIZE, CURSOR_PX_MULT } from "./BrushServiceConstants";
 import { GrassService } from "./GrassService";
-import { GRASS_SIZE } from "./GrassServiceConstats";
+import { GRASS_SIZE } from "./GrassServiceConstants";
 
 export class BrushService {
   private cursorPreview: Phaser.GameObjects.Ellipse;

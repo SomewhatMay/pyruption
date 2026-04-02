@@ -6,7 +6,7 @@ import {
   Grass,
   GRASS_SIZE,
   INITIAL_FIRE_PROBABILITY,
-} from "./GrassServiceConstats";
+} from "./GrassServiceConstants";
 
 export class GrassService {
   private grassMap: Grass[][];
