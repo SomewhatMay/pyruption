@@ -16,21 +16,21 @@ export class BrushService {
     const cx = Math.floor(pointer.x / GRASS_SIZE);
     const cy = Math.floor(pointer.y / GRASS_SIZE);
 
-    this.grassService.extingwishFire(this.grassService.getGrassInfo(cx, cy));
-
     const boundingRadius = Math.floor(this.cursorRadius * 1.5);
     for (
-      let x = clamp(cx - boundingRadius, 0, this.grassService.getSize().x);
-      x <= clamp(cx + boundingRadius, 0, this.grassService.getSize().x);
+      let x = clamp(cx - boundingRadius, 0, this.grassService.getSize().x - 1);
+      x <= clamp(cx + boundingRadius, 0, this.grassService.getSize().x - 1);
       x++
     ) {
       for (
-        let y = clamp(cy - boundingRadius, 0, this.grassService.getSize().y);
-        y <= clamp(cy + boundingRadius, 0, this.grassService.getSize().y);
+        let y = clamp(
+          cy - boundingRadius,
+          0,
+          this.grassService.getSize().y - 1
+        );
+        y <= clamp(cy + boundingRadius, 0, this.grassService.getSize().y - 1);
         y++
       ) {
-        if (x == cx && y == cy) continue;
-
         if (
           Math.sqrt(
             Math.pow(x * GRASS_SIZE + GRASS_SIZE / 2 - pointer.x, 2) +
