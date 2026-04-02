@@ -1,10 +1,12 @@
 import { Scene } from "phaser";
 import { GrassService } from "./game/GrassService";
+import { BrushService } from "./game/BrushService";
 
 export class Boot extends Scene {
   camera: Phaser.Cameras.Scene2D.Camera;
 
   grassService: GrassService;
+  brushService: BrushService;
 
   constructor() {
     super("Boot");
@@ -15,6 +17,7 @@ export class Boot extends Scene {
     //  The smaller the file size of the assets, the better, as the Boot Scene itself has no preloader.
 
     this.grassService = new GrassService(this);
+    this.brushService = new BrushService(this, this.grassService);
   }
 
   create() {
@@ -22,6 +25,7 @@ export class Boot extends Scene {
     this.camera.setBackgroundColor("rgba(0,0,0,0)");
 
     this.grassService.create();
+    this.brushService.create();
   }
 
   update() {

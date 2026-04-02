@@ -1,20 +1,12 @@
 import { getRandint } from "../../../lib/get-randint";
 import { Boot } from "../Boot";
-
-type GrassState = "alive" | "burning" | "dead";
-
-type Grass = {
-  x: number;
-  y: number;
-  state: GrassState;
-  image?: Phaser.GameObjects.Image;
-};
-
-const GRASS_SIZE = 32; // px, length and width (square)
-
-const INITIAL_FIRE_PROBABILITY = 0.01;
-const FIRE_PROBABILITY_INCREASE_RATE = 1.05;
-const FIRE_PROBABILITY_MAX = 0.1;
+import {
+  FIRE_PROBABILITY_INCREASE_RATE,
+  FIRE_PROBABILITY_MAX,
+  Grass,
+  GRASS_SIZE,
+  INITIAL_FIRE_PROBABILITY,
+} from "./GrassServiceConstats";
 
 export class GrassService {
   private grassMap: Grass[][];
@@ -65,6 +57,27 @@ export class GrassService {
     grassInfo.image = this.boot.add
       .image(grassInfo.x * GRASS_SIZE, grassInfo.y * GRASS_SIZE, "grass")
       .setOrigin(0, 0);
+  }
+
+  getSize() {
+    return {
+      x: this.grassMap.length,
+      y: this.grassMap[0].length,
+    };
+  }
+
+  getGrassInfo(x: number, y: number) {
+    if (
+      x < 0 ||
+      y < 0 ||
+      x > this.grassMap.length ||
+      y > this.grassMap[0].length
+    ) {
+      console.error(
+        `Attempted to index grass info outside of bounds (${x}, ${y})`
+      );
+    }
+    return this.grassMap[x][y];
   }
 
   update() {
@@ -131,13 +144,5 @@ export class GrassService {
         }
       }
     }
-    this.boot.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
-      const grassInfo =
-        this.grassMap[Math.floor(pointer.x / GRASS_SIZE)][
-          Math.floor(pointer.y / GRASS_SIZE)
-        ];
-
-      this.extingwishFire(grassInfo);
-    });
   }
 }
