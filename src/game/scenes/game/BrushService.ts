@@ -32,8 +32,11 @@ export class BrushService {
         if (x == cx && y == cy) continue;
 
         if (
-          Math.sqrt(Math.pow(x - cx, 2) + Math.pow(y - cy, 2)) >
-          this.cursorRadius
+          Math.sqrt(
+            Math.pow(x * GRASS_SIZE + GRASS_SIZE / 2 - pointer.x, 2) +
+              Math.pow(y * GRASS_SIZE + GRASS_SIZE / 2 - pointer.y, 2)
+          ) >
+          this.cursorRadius * GRASS_SIZE
         )
           continue;
 
@@ -51,8 +54,8 @@ export class BrushService {
       .ellipse(
         100,
         100,
-        this.cursorRadius * CURSOR_PX_MULT,
-        this.cursorRadius * CURSOR_PX_MULT,
+        this.cursorRadius * CURSOR_PX_MULT * 2,
+        this.cursorRadius * CURSOR_PX_MULT * 2,
         0xffffff,
         0.5
       )
