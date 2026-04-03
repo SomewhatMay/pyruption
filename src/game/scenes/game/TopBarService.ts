@@ -1,6 +1,6 @@
 import { Boot } from "../Boot";
 import { ARCADE_DEFAULT } from "../FontConstants";
-import { GRASS_MAP_X, GRASS_SIZE, WIN_WIDTH } from "../LayoutConstants";
+import { WIN_WIDTH } from "../LayoutConstants";
 import { TOP_BAR_HEIGHT } from "../LayoutConstants";
 
 export class TopBarService {

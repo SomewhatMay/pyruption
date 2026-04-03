@@ -1,7 +1,6 @@
 import { Boot } from "../Boot";
 import { ARCADE_DEFAULT } from "../FontConstants";
 import { BOTTOM_BAR_HEIGHT, BOTTOM_BAR_Y, WIN_WIDTH } from "../LayoutConstants";
-import { GRASS_MAP_X, GRASS_SIZE } from "../LayoutConstants";
 
 export class BottomBarService {
   private timeText: Phaser.GameObjects.Text;

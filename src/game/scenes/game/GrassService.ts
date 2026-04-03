@@ -1,5 +1,5 @@
 import { clamp } from "../../../lib/clamp";
-import { getRandint } from "../../../lib/get-randint";
+import { randInt } from "../../../lib/randint";
 import { Boot } from "../Boot";
 import {
   FIRE_PROBABILITY_INCREASE_RATE,
@@ -140,7 +140,7 @@ export class GrassService {
   update(dt: number) {
     if (this.aliveGrass.length > 0 && Math.random() < this.fireProbability) {
       // Pick a random grass block
-      const aliveIndex = getRandint(0, this.aliveGrass.length);
+      const aliveIndex = randInt(0, this.aliveGrass.length);
       const grassInfo = this.aliveGrass[aliveIndex];
 
       // If the block has been recovered too many times, provide a near-impossible
