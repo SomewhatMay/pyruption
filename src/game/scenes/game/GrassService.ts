@@ -22,6 +22,11 @@ export class GrassService {
 
   private fireProbability = INITIAL_FIRE_PROBABILITY;
 
+  public readonly grassCanvasOffset = {
+    x: 0,
+    y: 128,
+  }; // px
+
   constructor(private boot: Boot) {
     this.grassMap = [];
     this.aliveGrass = [];
@@ -59,8 +64,8 @@ export class GrassService {
     grassInfo.state = "burning";
     grassInfo.image = this.boot.add
       .image(
-        grassInfo.x * GRASS_SIZE,
-        grassInfo.y * GRASS_SIZE,
+        grassInfo.x * GRASS_SIZE + this.grassCanvasOffset.x,
+        grassInfo.y * GRASS_SIZE + this.grassCanvasOffset.y,
         "burning-grass"
       )
       .setOrigin(0, 0);
@@ -78,7 +83,11 @@ export class GrassService {
 
     grassInfo.state = "dead";
     grassInfo.image = this.boot.add
-      .image(grassInfo.x * GRASS_SIZE, grassInfo.y * GRASS_SIZE, "dead-grass")
+      .image(
+        grassInfo.x * GRASS_SIZE + this.grassCanvasOffset.x,
+        grassInfo.y * GRASS_SIZE + this.grassCanvasOffset.y,
+        "dead-grass"
+      )
       .setOrigin(0, 0);
   }
 
@@ -89,7 +98,11 @@ export class GrassService {
 
     grassInfo.state = "alive";
     grassInfo.image = this.boot.add
-      .image(grassInfo.x * GRASS_SIZE, grassInfo.y * GRASS_SIZE, "grass")
+      .image(
+        grassInfo.x * GRASS_SIZE + this.grassCanvasOffset.x,
+        grassInfo.y * GRASS_SIZE + this.grassCanvasOffset.y,
+        "grass"
+      )
       .setOrigin(0, 0);
 
     grassInfo.recoverCount++;
@@ -189,7 +202,11 @@ export class GrassService {
 
         if (grassInfo.state == "alive") {
           const image = this.boot.add
-            .image(x * GRASS_SIZE, y * GRASS_SIZE, "grass")
+            .image(
+              x * GRASS_SIZE + this.grassCanvasOffset.x,
+              y * GRASS_SIZE + this.grassCanvasOffset.y,
+              "grass"
+            )
             .setOrigin(0, 0);
 
           grassInfo.image = image;

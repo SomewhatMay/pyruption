@@ -19,6 +19,9 @@ export class BrushService {
   constructor(private boot: Boot, private grassService: GrassService) {}
 
   onPointerDown(mouseX: number, mouseY: number) {
+    mouseX -= this.grassService.grassCanvasOffset.x;
+    mouseY -= this.grassService.grassCanvasOffset.y;
+
     // Create bounding box
     const cx = Math.floor(mouseX / GRASS_SIZE);
     const cy = Math.floor(mouseY / GRASS_SIZE);
