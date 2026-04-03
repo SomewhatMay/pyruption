@@ -4,6 +4,8 @@ import {
   FIRE_PROBABILITY_INCREASE_RATE,
   FIRE_PROBABILITY_MAX,
   Grass,
+  GRASS_MAP_X,
+  GRASS_MAP_Y,
   GRASS_SIZE,
   INITIAL_FIRE_PROBABILITY,
 } from "./GrassServiceConstants";
@@ -15,8 +17,8 @@ export class GrassService {
   constructor(private boot: Boot) {
     this.grassMap = [];
 
-    for (let x = 0; x < 32; x++) {
-      for (let y = 0; y < 32; y++) {
+    for (let x = 0; x < GRASS_MAP_X; x++) {
+      for (let y = 0; y < GRASS_MAP_Y; y++) {
         if (!this.grassMap[x]) {
           this.grassMap[x] = [];
         }
@@ -84,8 +86,8 @@ export class GrassService {
     if (Math.random() < this.fireProbability) {
       // Pick a random grass block
 
-      const x = getRandint(0, 32);
-      const y = getRandint(0, 32);
+      const x = getRandint(0, GRASS_MAP_X);
+      const y = getRandint(0, GRASS_MAP_Y);
 
       this.setFire(this.grassMap[x][y]);
 
