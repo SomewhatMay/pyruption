@@ -16,11 +16,13 @@ import {
 
 export class GrassService {
   private grassMap: Grass[][];
+  private aliveGrass: Grass[];
 
   private fireProbability = INITIAL_FIRE_PROBABILITY;
 
   constructor(private boot: Boot) {
     this.grassMap = [];
+    this.aliveGrass = [];
 
     for (let x = 0; x < GRASS_MAP_X; x++) {
       for (let y = 0; y < GRASS_MAP_Y; y++) {
@@ -28,12 +30,15 @@ export class GrassService {
           this.grassMap[x] = [];
         }
 
-        this.grassMap[x][y] = {
+        const newGrass = {
           x,
           y,
           hp: GRASS_MAX_HP,
           state: "alive",
-        };
+        } satisfies Grass;
+
+        this.grassMap[x][y] = newGrass;
+        this.aliveGrass.push(newGrass);
       }
     }
 
@@ -42,7 +47,7 @@ export class GrassService {
     this.boot.load.image("dead-grass", "assets/dead-grass.png");
   }
 
-  setFire(grassInfo: Grass) {
+  setFire(grassInfo: Grass, aliveArrayIndex?: number) {
     if (grassInfo.state !== "alive") return;
 
     grassInfo.image?.destroy();
@@ -55,6 +60,11 @@ export class GrassService {
         "burning-grass"
       )
       .setOrigin(0, 0);
+
+    this.aliveGrass.splice(
+      aliveArrayIndex ?? this.aliveGrass.indexOf(grassInfo),
+      1
+    );
   }
 
   setDeadTrue(grassInfo: Grass) {
@@ -78,6 +88,7 @@ export class GrassService {
       .image(grassInfo.x * GRASS_SIZE, grassInfo.y * GRASS_SIZE, "grass")
       .setOrigin(0, 0);
 
+    this.aliveGrass.push(grassInfo);
     grassInfo.hp = Math.max(grassInfo.hp, RECOVER_MIN_HP);
   }
 
@@ -103,13 +114,11 @@ export class GrassService {
   }
 
   update(dt: number) {
-    if (Math.random() < this.fireProbability) {
+    if (this.aliveGrass.length > 0 && Math.random() < this.fireProbability) {
       // Pick a random grass block
 
-      const x = getRandint(0, GRASS_MAP_X);
-      const y = getRandint(0, GRASS_MAP_Y);
-
-      this.setFire(this.grassMap[x][y]);
+      const aliveIndex = getRandint(0, this.aliveGrass.length);
+      this.setFire(this.aliveGrass[aliveIndex], aliveIndex);
 
       // Increase the speed at which fire catches
       this.fireProbability = Math.min(
