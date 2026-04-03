@@ -7,6 +7,8 @@ import { WIN_WIDTH } from "./scenes/LayoutConstants";
 //  https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
 const config: Phaser.Types.Core.GameConfig = {
   type: AUTO,
+  pixelArt: true,
+  roundPixels: true,
 
   width: WIN_WIDTH,
   height: WIN_HEIGHT,

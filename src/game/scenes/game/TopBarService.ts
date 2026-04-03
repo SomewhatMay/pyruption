@@ -1,4 +1,5 @@
 import { Boot } from "../Boot";
+import { ARCADE_DEFAULT } from "../FontConstants";
 import { GRASS_MAP_X, GRASS_SIZE, WIN_WIDTH } from "../LayoutConstants";
 import { TOP_BAR_HEIGHT } from "../LayoutConstants";
 
@@ -14,7 +15,7 @@ export class TopBarService {
       .setOrigin(0, 0);
 
     this.boot.add
-      .text(topBarWidth / 2, TOP_BAR_HEIGHT / 2, "Pyruption")
+      .text(topBarWidth / 2, TOP_BAR_HEIGHT / 2, "Pyruption", ARCADE_DEFAULT)
       .setOrigin(0.5, 0.5);
 
     this.boot.add

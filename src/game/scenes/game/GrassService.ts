@@ -54,9 +54,9 @@ export class GrassService {
       }
     }
 
-    this.boot.load.image("grass", "assets/grass.png");
-    this.boot.load.image("burning-grass", "assets/burning-grass.png");
-    this.boot.load.image("dead-grass", "assets/dead-grass.png");
+    this.boot.load.image("grass", "assets/sprites/grass.png");
+    this.boot.load.image("burning-grass", "assets/sprites/burning-grass.png");
+    this.boot.load.image("dead-grass", "assets/sprites/dead-grass.png");
   }
 
   setFire(grassInfo: Grass, aliveArrayIndex?: number) {

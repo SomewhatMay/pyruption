@@ -31,6 +31,7 @@ export class Boot extends Scene {
 
   create() {
     this.scale.refresh();
+    this.game.canvas.style.imageRendering = "pixelated";
 
     this.camera = this.cameras.main;
     this.camera.setBackgroundColor("rgba(0,0,0,0)");
@@ -42,8 +43,9 @@ export class Boot extends Scene {
     this.bottomBarService.create();
   }
 
-  update(_: number, dt: number) {
+  update(now: number, dt: number) {
     this.grassService.update(dt);
     this.brushService.update();
+    this.bottomBarService.update(now);
   }
 }

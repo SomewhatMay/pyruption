@@ -1,5 +1,5 @@
-export const WIN_WIDTH = 1000;
-export const WIN_HEIGHT = 800;
+export const WIN_WIDTH = 1200;
+export const WIN_HEIGHT = 1000;
 
 export const TOP_BAR_HEIGHT = 48;
 
