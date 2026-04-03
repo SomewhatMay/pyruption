@@ -11,6 +11,7 @@ import {
   GRASS_MAP_Y,
   GRASS_SIZE,
   INITIAL_FIRE_PROBABILITY,
+  RECOVER_MIN_HP,
 } from "./GrassServiceConstants";
 
 export class GrassService {
@@ -42,7 +43,7 @@ export class GrassService {
   }
 
   setFire(grassInfo: Grass) {
-    if (grassInfo.state === "burning") return;
+    if (grassInfo.state !== "alive") return;
 
     grassInfo.image?.destroy();
 
@@ -76,6 +77,8 @@ export class GrassService {
     grassInfo.image = this.boot.add
       .image(grassInfo.x * GRASS_SIZE, grassInfo.y * GRASS_SIZE, "grass")
       .setOrigin(0, 0);
+
+    grassInfo.hp = Math.max(grassInfo.hp, RECOVER_MIN_HP);
   }
 
   getSize() {
