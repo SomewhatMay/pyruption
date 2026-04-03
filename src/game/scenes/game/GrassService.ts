@@ -94,6 +94,8 @@ export class GrassService {
       )
       .setOrigin(0, 0)
       .setDisplaySize(GRASS_SIZE, GRASS_SIZE);
+
+    this.boot.events.emit("grass-died");
   }
 
   extinguishFire(grassInfo: Grass) {
@@ -135,6 +137,10 @@ export class GrassService {
       );
     }
     return this.grassMap[x][y];
+  }
+
+  getAliveCount() {
+    return this.aliveGrass.length;
   }
 
   update(dt: number) {
