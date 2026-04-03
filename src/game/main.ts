@@ -13,6 +13,7 @@ const config: Phaser.Types.Core.GameConfig = {
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
 
+  title: "Pyruption",
   parent: "game-container",
   backgroundColor: "rgba(0,0,0,0)",
   scene: [Boot],
