@@ -89,10 +89,5 @@ export class BrushService {
 
       this.lastBrushUse = this.boot.time.now;
     }
-    //  else {
-    //   console.log(
-    //     `${this.pointerDown} ${this.boot.time.now - this.lastBrushUse}`
-    //   );
-    // }
   }
 }
