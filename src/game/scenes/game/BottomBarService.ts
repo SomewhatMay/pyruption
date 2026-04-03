@@ -1,11 +1,12 @@
 import { Boot } from "../Boot";
 import { ARCADE_DEFAULT } from "../FontConstants";
 import { BOTTOM_BAR_HEIGHT, BOTTOM_BAR_Y, WIN_WIDTH } from "../LayoutConstants";
+import { ScoreService } from "./ScoreService";
 
 export class BottomBarService {
   private timeText: Phaser.GameObjects.Text;
 
-  constructor(private boot: Boot) {}
+  constructor(private boot: Boot, private scoreService: ScoreService) {}
 
   create() {
     const commonPad = BOTTOM_BAR_HEIGHT * 0.125;
@@ -58,7 +59,9 @@ export class BottomBarService {
     /* Score Counter */
   }
 
-  update(now: number) {
-    this.timeText.setText(`${(now / 1000).toFixed(2)}`);
+  update() {
+    this.timeText.setText(
+      `${(this.scoreService.getElapsedTime() / 1000).toFixed(2)}`
+    );
   }
 }

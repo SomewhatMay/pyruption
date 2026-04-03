@@ -4,6 +4,7 @@ import { BrushService } from "./game/BrushService";
 import { TopBarService } from "./game/TopBarService";
 import { BottomBarService } from "./game/BottomBarService";
 import { BackgroundService } from "./game/BackgroundService";
+import { ScoreService } from "./game/ScoreService";
 
 export class Boot extends Scene {
   camera: Phaser.Cameras.Scene2D.Camera;
@@ -13,6 +14,7 @@ export class Boot extends Scene {
   topBarService: TopBarService;
   bottomBarService: BottomBarService;
   backgroundService: BackgroundService;
+  scoreService: ScoreService;
 
   constructor() {
     super("Boot");
@@ -25,7 +27,8 @@ export class Boot extends Scene {
     this.grassService = new GrassService(this);
     this.brushService = new BrushService(this, this.grassService);
     this.topBarService = new TopBarService(this);
-    this.bottomBarService = new BottomBarService(this);
+    this.scoreService = new ScoreService(this);
+    this.bottomBarService = new BottomBarService(this, this.scoreService);
     this.backgroundService = new BackgroundService(this);
   }
 
@@ -41,11 +44,12 @@ export class Boot extends Scene {
     this.brushService.create();
     this.topBarService.create();
     this.bottomBarService.create();
+    this.scoreService.create();
   }
 
   update(now: number, dt: number) {
     this.grassService.update(dt);
     this.brushService.update();
-    this.bottomBarService.update(now);
+    this.bottomBarService.update();
   }
 }
