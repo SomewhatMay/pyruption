@@ -15,6 +15,7 @@ import {
 
 export class GrassService {
   private grassMap: Grass[][];
+
   private fireProbability = INITIAL_FIRE_PROBABILITY;
 
   constructor(private boot: Boot) {
