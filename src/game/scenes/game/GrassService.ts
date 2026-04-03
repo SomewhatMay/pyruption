@@ -12,6 +12,8 @@ import {
   GRASS_SIZE,
   INITIAL_FIRE_PROBABILITY,
   RECOVER_MIN_HP,
+  MAX_RECOVER_COUNT,
+  CRITICAL_MODE_HP,
 } from "./GrassServiceConstants";
 
 export class GrassService {
@@ -33,7 +35,9 @@ export class GrassService {
         const newGrass = {
           x,
           y,
+
           hp: GRASS_MAX_HP,
+          recoverCount: 0,
           state: "alive",
         } satisfies Grass;
 
@@ -88,8 +92,9 @@ export class GrassService {
       .image(grassInfo.x * GRASS_SIZE, grassInfo.y * GRASS_SIZE, "grass")
       .setOrigin(0, 0);
 
-    this.aliveGrass.push(grassInfo);
+    grassInfo.recoverCount++;
     grassInfo.hp = Math.max(grassInfo.hp, RECOVER_MIN_HP);
+    this.aliveGrass.push(grassInfo);
   }
 
   getSize() {
@@ -116,9 +121,16 @@ export class GrassService {
   update(dt: number) {
     if (this.aliveGrass.length > 0 && Math.random() < this.fireProbability) {
       // Pick a random grass block
-
       const aliveIndex = getRandint(0, this.aliveGrass.length);
-      this.setFire(this.aliveGrass[aliveIndex], aliveIndex);
+      const grassInfo = this.aliveGrass[aliveIndex];
+
+      // If the block has been recovered too many times, provide a near-impossible
+      // opportunity to recover the block (through a really low HP)
+      if (grassInfo.recoverCount > MAX_RECOVER_COUNT) {
+        grassInfo.hp = CRITICAL_MODE_HP;
+      }
+
+      this.setFire(grassInfo, aliveIndex);
 
       // Increase the speed at which fire catches
       this.fireProbability = Math.min(
