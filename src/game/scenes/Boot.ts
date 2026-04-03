@@ -3,6 +3,7 @@ import { GrassService } from "./game/GrassService";
 import { BrushService } from "./game/BrushService";
 import { TopBarService } from "./game/TopBarService";
 import { BottomBarService } from "./game/BottomBarService";
+import { BackgroundService } from "./game/BackgroundService";
 
 export class Boot extends Scene {
   camera: Phaser.Cameras.Scene2D.Camera;
@@ -11,6 +12,7 @@ export class Boot extends Scene {
   brushService: BrushService;
   topBarService: TopBarService;
   bottomBarService: BottomBarService;
+  backgroundService: BackgroundService;
 
   constructor() {
     super("Boot");
@@ -24,12 +26,16 @@ export class Boot extends Scene {
     this.brushService = new BrushService(this, this.grassService);
     this.topBarService = new TopBarService(this);
     this.bottomBarService = new BottomBarService(this);
+    this.backgroundService = new BackgroundService(this);
   }
 
   create() {
+    this.scale.refresh();
+
     this.camera = this.cameras.main;
     this.camera.setBackgroundColor("rgba(0,0,0,0)");
 
+    this.backgroundService.create();
     this.grassService.create();
     this.brushService.create();
     this.topBarService.create();

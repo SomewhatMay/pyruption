@@ -1,21 +1,23 @@
 import { clamp } from "../../../lib/clamp";
 import { getRandint } from "../../../lib/get-randint";
 import { Boot } from "../Boot";
-import { MAX_BRUSH_SPEED } from "./BrushServiceConstants";
 import {
   FIRE_PROBABILITY_INCREASE_RATE,
   FIRE_PROBABILITY_MAX,
   Grass,
   GRASS_MAX_HP,
-  GRASS_MAP_X,
-  GRASS_MAP_Y,
-  GRASS_SIZE,
   INITIAL_FIRE_PROBABILITY,
   RECOVER_MIN_HP,
   MAX_RECOVER_COUNT,
   CRITICAL_MODE_HP,
 } from "./GrassServiceConstants";
-import { TOP_BAR_HEIGHT } from "./TopBarServiceConstants";
+import {
+  GRASS_MAP_X,
+  GRASS_MAP_Y,
+  GRASS_SIZE,
+  HORIZONTAL_GRASS_PAD,
+} from "../LayoutConstants";
+import { TOP_BAR_HEIGHT } from "../LayoutConstants";
 
 export class GrassService {
   private grassMap: Grass[][];
@@ -24,7 +26,7 @@ export class GrassService {
   private fireProbability = INITIAL_FIRE_PROBABILITY;
 
   public readonly grassCanvasOffset = {
-    x: 0,
+    x: HORIZONTAL_GRASS_PAD,
     y: TOP_BAR_HEIGHT,
   }; // px
 
@@ -69,7 +71,8 @@ export class GrassService {
         grassInfo.y * GRASS_SIZE + this.grassCanvasOffset.y,
         "burning-grass"
       )
-      .setOrigin(0, 0);
+      .setOrigin(0, 0)
+      .setDisplaySize(GRASS_SIZE, GRASS_SIZE);
 
     this.aliveGrass.splice(
       aliveArrayIndex ?? this.aliveGrass.indexOf(grassInfo),
@@ -89,7 +92,8 @@ export class GrassService {
         grassInfo.y * GRASS_SIZE + this.grassCanvasOffset.y,
         "dead-grass"
       )
-      .setOrigin(0, 0);
+      .setOrigin(0, 0)
+      .setDisplaySize(GRASS_SIZE, GRASS_SIZE);
   }
 
   extinguishFire(grassInfo: Grass) {
@@ -104,7 +108,8 @@ export class GrassService {
         grassInfo.y * GRASS_SIZE + this.grassCanvasOffset.y,
         "grass"
       )
-      .setOrigin(0, 0);
+      .setOrigin(0, 0)
+      .setDisplaySize(GRASS_SIZE, GRASS_SIZE);
 
     grassInfo.recoverCount++;
     grassInfo.hp = Math.max(grassInfo.hp, RECOVER_MIN_HP);
@@ -208,7 +213,8 @@ export class GrassService {
               y * GRASS_SIZE + this.grassCanvasOffset.y,
               "grass"
             )
-            .setOrigin(0, 0);
+            .setOrigin(0, 0)
+            .setDisplaySize(GRASS_SIZE, GRASS_SIZE);
 
           grassInfo.image = image;
         }

@@ -1,12 +1,12 @@
 import { Boot } from "../Boot";
-import { GRASS_MAP_X, GRASS_SIZE } from "./GrassServiceConstants";
-import { TOP_BAR_HEIGHT } from "./TopBarServiceConstants";
+import { GRASS_MAP_X, GRASS_SIZE, WIN_WIDTH } from "../LayoutConstants";
+import { TOP_BAR_HEIGHT } from "../LayoutConstants";
 
 export class TopBarService {
   constructor(private boot: Boot) {}
 
   create() {
-    const topBarWidth = GRASS_SIZE * GRASS_MAP_X;
+    const topBarWidth = WIN_WIDTH;
 
     // Create general header
     this.boot.add

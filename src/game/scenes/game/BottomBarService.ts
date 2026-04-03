@@ -1,13 +1,13 @@
 import { Boot } from "../Boot";
-import { BOTTOM_BAR_HEIGHT, BOTTOM_BAR_Y } from "./BottomBarServiceConstants";
-import { GRASS_MAP_X, GRASS_SIZE } from "./GrassServiceConstants";
+import { BOTTOM_BAR_HEIGHT, BOTTOM_BAR_Y, WIN_WIDTH } from "../LayoutConstants";
+import { GRASS_MAP_X, GRASS_SIZE } from "../LayoutConstants";
 
 export class BottomBarService {
   constructor(private boot: Boot) {}
 
   create() {
     const commonPad = BOTTOM_BAR_HEIGHT * 0.125;
-    const bottomBarWidth = GRASS_SIZE * GRASS_MAP_X;
+    const bottomBarWidth = WIN_WIDTH;
     // Bottom bar background
 
     this.boot.add

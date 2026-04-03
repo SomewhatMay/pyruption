@@ -1,4 +1,4 @@
-import { GRASS_SIZE } from "./GrassServiceConstants";
+import { GRASS_SIZE } from "../LayoutConstants";
 
 export const CURSOR_PX_MULT = GRASS_SIZE;
 export const CURSOR_DEFAULT_SIZE = 2;

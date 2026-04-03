@@ -6,7 +6,7 @@ import {
   MAX_BRUSH_SPEED,
 } from "./BrushServiceConstants";
 import { GrassService } from "./GrassService";
-import { GRASS_SIZE } from "./GrassServiceConstants";
+import { GRASS_SIZE } from "../LayoutConstants";
 
 export class BrushService {
   private cursorPreview: Phaser.GameObjects.Ellipse;
