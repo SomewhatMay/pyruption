@@ -15,6 +15,7 @@ import {
   MAX_RECOVER_COUNT,
   CRITICAL_MODE_HP,
 } from "./GrassServiceConstants";
+import { TOP_BAR_HEIGHT } from "./TopBarServiceConstants";
 
 export class GrassService {
   private grassMap: Grass[][];
@@ -24,7 +25,7 @@ export class GrassService {
 
   public readonly grassCanvasOffset = {
     x: 0,
-    y: 128,
+    y: TOP_BAR_HEIGHT,
   }; // px
 
   constructor(private boot: Boot) {
