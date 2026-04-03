@@ -40,9 +40,7 @@ export class BrushService {
         )
           continue;
 
-        // console.log(`Extingwishing ${x} ${y}`);
-
-        this.grassService.extingwishFire(this.grassService.getGrassInfo(x, y));
+        this.grassService.extinguishFire(this.grassService.getGrassInfo(x, y));
       }
     }
   }

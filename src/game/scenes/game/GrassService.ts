@@ -48,7 +48,7 @@ export class GrassService {
       .setOrigin(0, 0);
   }
 
-  extingwishFire(grassInfo: Grass) {
+  extinguishFire(grassInfo: Grass) {
     if (grassInfo.state !== "burning") return;
 
     grassInfo.image?.destroy();
