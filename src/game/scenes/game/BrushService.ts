@@ -1,22 +1,30 @@
 import { clamp } from "../../../lib/clamp";
 import { Boot } from "../Boot";
-import { CURSOR_DEFAULT_SIZE, CURSOR_PX_MULT } from "./BrushServiceConstants";
+import {
+  CURSOR_DEFAULT_SIZE,
+  CURSOR_PX_MULT,
+  MAX_BRUSH_SPEED,
+} from "./BrushServiceConstants";
 import { GrassService } from "./GrassService";
 import { GRASS_SIZE } from "./GrassServiceConstants";
 
 export class BrushService {
   private cursorPreview: Phaser.GameObjects.Ellipse;
 
+  private pointerDown = false;
+  private lastBrushUse = 0;
+
   private cursorRadius = CURSOR_DEFAULT_SIZE;
 
   constructor(private boot: Boot, private grassService: GrassService) {}
 
-  onPointerDown(pointer: Phaser.Input.Pointer) {
+  onPointerDown(mouseX: number, mouseY: number) {
     // Create bounding box
-    const cx = Math.floor(pointer.x / GRASS_SIZE);
-    const cy = Math.floor(pointer.y / GRASS_SIZE);
+    const cx = Math.floor(mouseX / GRASS_SIZE);
+    const cy = Math.floor(mouseY / GRASS_SIZE);
 
     const boundingRadius = Math.floor(this.cursorRadius * 1.5);
+
     for (
       let x = clamp(cx - boundingRadius, 0, this.grassService.getSize().x - 1);
       x <= clamp(cx + boundingRadius, 0, this.grassService.getSize().x - 1);
@@ -33,8 +41,8 @@ export class BrushService {
       ) {
         if (
           Math.sqrt(
-            Math.pow(x * GRASS_SIZE + GRASS_SIZE / 2 - pointer.x, 2) +
-              Math.pow(y * GRASS_SIZE + GRASS_SIZE / 2 - pointer.y, 2)
+            Math.pow(x * GRASS_SIZE + GRASS_SIZE / 2 - mouseX, 2) +
+              Math.pow(y * GRASS_SIZE + GRASS_SIZE / 2 - mouseY, 2)
           ) >
           this.cursorRadius * GRASS_SIZE
         )
@@ -59,14 +67,32 @@ export class BrushService {
       )
       .setDepth(10);
 
-    // Have mose preview follow cursor
+    // Have mouse preview follow cursor
     this.boot.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
       this.cursorPreview.setPosition(pointer.x, pointer.y);
     });
 
-    // Click to extingwish fire
-    this.boot.input.on("pointerdown", (pointer: Phaser.Input.Pointer) =>
-      this.onPointerDown(pointer)
-    );
+    // Click to extinguish fire
+    this.boot.input.on("pointerdown", () => (this.pointerDown = true));
+    this.boot.input.on("pointerup", () => (this.pointerDown = false));
+  }
+
+  update() {
+    if (
+      this.pointerDown &&
+      this.boot.time.now - this.lastBrushUse > MAX_BRUSH_SPEED
+    ) {
+      this.onPointerDown(
+        this.boot.input.mousePointer.x,
+        this.boot.input.mousePointer.y
+      );
+
+      this.lastBrushUse = this.boot.time.now;
+    }
+    //  else {
+    //   console.log(
+    //     `${this.pointerDown} ${this.boot.time.now - this.lastBrushUse}`
+    //   );
+    // }
   }
 }
