@@ -28,8 +28,8 @@ export class Boot extends Scene {
     this.brushService.create();
   }
 
-  update() {
-    this.grassService.update();
+  update(_: number, dt: number) {
+    this.grassService.update(dt);
     this.brushService.update();
   }
 }

@@ -1,9 +1,12 @@
+import { clamp } from "../../../lib/clamp";
 import { getRandint } from "../../../lib/get-randint";
 import { Boot } from "../Boot";
+import { MAX_BRUSH_SPEED } from "./BrushServiceConstants";
 import {
   FIRE_PROBABILITY_INCREASE_RATE,
   FIRE_PROBABILITY_MAX,
   Grass,
+  GRASS_MAX_HP,
   GRASS_MAP_X,
   GRASS_MAP_Y,
   GRASS_SIZE,
@@ -26,6 +29,7 @@ export class GrassService {
         this.grassMap[x][y] = {
           x,
           y,
+          hp: GRASS_MAX_HP,
           state: "alive",
         };
       }
@@ -33,6 +37,7 @@ export class GrassService {
 
     this.boot.load.image("grass", "assets/grass.png");
     this.boot.load.image("burning-grass", "assets/burning-grass.png");
+    this.boot.load.image("dead-grass", "assets/dead-grass.png");
   }
 
   setFire(grassInfo: Grass) {
@@ -47,6 +52,17 @@ export class GrassService {
         grassInfo.y * GRASS_SIZE,
         "burning-grass"
       )
+      .setOrigin(0, 0);
+  }
+
+  setDeadTrue(grassInfo: Grass) {
+    if (grassInfo.state === "dead") return;
+
+    grassInfo.image?.destroy();
+
+    grassInfo.state = "dead";
+    grassInfo.image = this.boot.add
+      .image(grassInfo.x * GRASS_SIZE, grassInfo.y * GRASS_SIZE, "dead-grass")
       .setOrigin(0, 0);
   }
 
@@ -82,7 +98,7 @@ export class GrassService {
     return this.grassMap[x][y];
   }
 
-  update() {
+  update(dt: number) {
     if (Math.random() < this.fireProbability) {
       // Pick a random grass block
 
@@ -98,11 +114,20 @@ export class GrassService {
       );
     }
 
-    // Spread fire
+    // Spread fire & reduce hp
     for (let x = 0; x < this.grassMap.length; x++) {
       for (let y = 0; y < this.grassMap[x].length; y++) {
+        const grassInfo = this.getGrassInfo(x, y);
+
+        if (grassInfo.state === "burning") {
+          grassInfo.hp = clamp(grassInfo.hp - 1 * dt, 0, GRASS_MAX_HP);
+
+          if (grassInfo.hp <= 0) {
+            this.setDeadTrue(grassInfo);
+          }
+        }
+
         if (Math.random() > this.fireProbability) continue;
-        const grassInfo = this.grassMap[x][y];
 
         if (grassInfo.state === "burning") {
           for (let dx = -1; dx <= 1; dx++) {
@@ -120,7 +145,7 @@ export class GrassService {
                 nx < this.grassMap.length &&
                 ny < this.grassMap[nx].length
               ) {
-                this.setFire(this.grassMap[nx][ny]);
+                this.setFire(this.getGrassInfo(nx, ny));
               }
             }
           }
