@@ -1,7 +1,11 @@
 import { Boot } from "../Boot";
+import { GameStateService } from "./GameStateService";
 
 export class ScoreService {
-  private gameStartTime: number; // ms
+  public gameStartTime: number; // ms
+  public gameEndTime: number;
+
+  private gameStateService: GameStateService;
 
   constructor(private boot: Boot) {}
 
@@ -14,10 +18,15 @@ export class ScoreService {
    * @returns ms - the time elapsed since the beginning of the game
    */
   getElapsedTime() {
+    if (this.gameStateService.isGameOver) {
+      return this.gameEndTime - this.gameStartTime;
+    }
+
     return this.boot.time.now - this.gameStartTime;
   }
 
-  create() {
+  create(gameStateService: GameStateService) {
+    this.gameStateService = gameStateService;
     this.restartStartGameTimer();
   }
 }

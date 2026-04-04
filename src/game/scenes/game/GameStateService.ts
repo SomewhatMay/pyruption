@@ -10,8 +10,8 @@ import { GrassService } from "./GrassService";
 import { ScoreService } from "./ScoreService";
 
 export class GameStateService {
-  private isPaused = true;
-  private isGameOver = false;
+  public isPaused = true;
+  public isGameOver = false;
 
   constructor(
     private boot: Boot,
@@ -24,7 +24,7 @@ export class GameStateService {
 
     this.boot.events.on("grass-died", () => this.onGrassDied());
 
-    this.showGameOverWindow();
+    this.startGame();
   }
 
   showGameOverWindow() {
@@ -40,7 +40,6 @@ export class GameStateService {
       // Clean up all UI elements
 
       gameOverLayer.destroy();
-      this.boot.input.setDefaultCursor("none");
 
       this.startGame();
     };
@@ -100,10 +99,15 @@ export class GameStateService {
         .setOrigin(0.5, 0),
 
       this.boot.add
-        .text(WIN_WIDTH / 2 + GO_WINDOW_WIDTH * 0.25, WIN_HEIGHT / 2, "100", {
-          ...arcadeDefaultResized(25),
-          color: "rgb(255,255,0)",
-        })
+        .text(
+          WIN_WIDTH / 2 + GO_WINDOW_WIDTH * 0.25,
+          WIN_HEIGHT / 2,
+          `${(this.scoreService.getElapsedTime() / 1000).toFixed(2)}`,
+          {
+            ...arcadeDefaultResized(25),
+            color: "rgb(255,255,0)",
+          }
+        )
         .setOrigin(0.5, 0.5),
 
       /* Restart Button */
@@ -144,12 +148,15 @@ export class GameStateService {
     this.isGameOver = false;
     this.isPaused = false;
 
+    this.boot.input.setDefaultCursor("none");
+
     this.scoreService.restartStartGameTimer();
     this.grassService.resetAllGrass();
     this.grassService.resetProbabilities();
   }
 
   onGameOver() {
+    this.scoreService.gameEndTime = this.boot.time.now;
     this.isGameOver = true;
     this.showGameOverWindow();
   }

@@ -52,7 +52,7 @@ export class Boot extends Scene {
     this.topBarService.create();
     this.bottomBarService.create();
     this.gameStateService.create();
-    this.scoreService.create();
+    this.scoreService.create(this.gameStateService);
   }
 
   update(now: number, dt: number) {
