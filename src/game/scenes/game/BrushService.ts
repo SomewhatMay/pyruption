@@ -57,8 +57,6 @@ export class BrushService {
   }
 
   create() {
-    this.boot.input.setDefaultCursor("none");
-
     this.cursorPreview = this.boot.add
       .ellipse(
         100,
