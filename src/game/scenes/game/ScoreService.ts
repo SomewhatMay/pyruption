@@ -5,12 +5,18 @@ export class ScoreService {
   public gameStartTime: number; // ms
   public gameEndTime: number;
 
+  public score: number;
+
   private gameStateService: GameStateService;
 
   constructor(private boot: Boot) {}
 
   restartStartGameTimer() {
     this.gameStartTime = this.boot.time.now;
+  }
+
+  resetScore() {
+    this.score = 0;
   }
 
   /**

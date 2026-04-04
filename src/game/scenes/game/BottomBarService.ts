@@ -28,6 +28,7 @@ export class BottomBarService {
     const TIMER_CARD_WIDTH = 100;
     const TIMER_CARD_HEIGHT = BOTTOM_BAR_HEIGHT * 0.75;
     const TIMER_CARD_Y_PAD = 8;
+
     this.boot.add
       .rectangle(
         bottomBarWidth - commonPad + 4,
@@ -66,7 +67,48 @@ export class BottomBarService {
       )
       .setOrigin(1, 1);
 
-    /* Score Counter */
+    /* Score Card */
+    const SCORE_CARD_WIDTH = 200;
+    const SCORE_CARD_HEIGHT = BOTTOM_BAR_HEIGHT * 0.75;
+    const SCORE_CARD_Y_PAD = 8;
+
+    this.boot.add
+      .rectangle(
+        bottomBarWidth - TIMER_CARD_WIDTH - commonPad * 2,
+        BOTTOM_BAR_Y + BOTTOM_BAR_HEIGHT / 2,
+        SCORE_CARD_WIDTH + 8,
+        SCORE_CARD_HEIGHT + 8,
+        0x777777
+      )
+      .setOrigin(1, 0.5);
+
+    this.boot.add
+      .rectangle(
+        bottomBarWidth - TIMER_CARD_WIDTH - commonPad * 2 - 4,
+        BOTTOM_BAR_Y + BOTTOM_BAR_HEIGHT / 2,
+        SCORE_CARD_WIDTH,
+        SCORE_CARD_HEIGHT,
+        0x999999
+      )
+      .setOrigin(1, 0.5);
+
+    this.boot.add
+      .text(
+        bottomBarWidth - TIMER_CARD_WIDTH - commonPad * 3 - 4,
+        BOTTOM_BAR_Y + commonPad + SCORE_CARD_Y_PAD,
+        "Score",
+        ARCADE_DEFAULT
+      )
+      .setOrigin(1, 0);
+
+    this.boot.add
+      .text(
+        bottomBarWidth - TIMER_CARD_WIDTH - commonPad * 3 - 4,
+        BOTTOM_BAR_Y + commonPad + SCORE_CARD_HEIGHT - SCORE_CARD_Y_PAD,
+        "0",
+        arcadeDefaultResized(16)
+      )
+      .setOrigin(1, 1);
   }
 
   update() {

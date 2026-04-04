@@ -151,6 +151,7 @@ export class GameStateService {
     this.boot.input.setDefaultCursor("none");
 
     this.scoreService.restartStartGameTimer();
+    this.scoreService.resetScore();
     this.grassService.resetAllGrass();
     this.grassService.resetProbabilities();
   }
