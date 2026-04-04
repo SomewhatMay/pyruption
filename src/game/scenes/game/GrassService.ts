@@ -22,6 +22,8 @@ import { TOP_BAR_HEIGHT } from "../LayoutConstants";
 export class GrassService {
   private grassMap: Grass[][];
   private aliveGrass: Grass[];
+  private burningGrass: Grass[];
+  private deadGrass: Grass[];
 
   private fireProbability = INITIAL_FIRE_PROBABILITY;
 
@@ -33,6 +35,8 @@ export class GrassService {
   constructor(private boot: Boot) {
     this.grassMap = [];
     this.aliveGrass = [];
+    this.burningGrass = [];
+    this.deadGrass = [];
 
     for (let x = 0; x < GRASS_MAP_X; x++) {
       for (let y = 0; y < GRASS_MAP_Y; y++) {
@@ -59,12 +63,62 @@ export class GrassService {
     this.boot.load.image("dead-grass", "assets/sprites/dead-grass.png");
   }
 
-  setFire(grassInfo: Grass, aliveArrayIndex?: number) {
+  removeGrassFromStateArray(grassInfo: Grass) {
+    let array: Grass[] | null = null;
+
+    switch (grassInfo.state) {
+      case "alive":
+        array = this.aliveGrass;
+        break;
+      case "burning":
+        array = this.burningGrass;
+        break;
+      case "dead":
+        array = this.deadGrass;
+        break;
+      default:
+        console.error(
+          `Grass state '${grassInfo.state}' is not valid when removing from state array`
+        );
+        return;
+    }
+
+    array.splice(array.indexOf(grassInfo), 1);
+  }
+
+  setGrassState(grassInfo: Grass, newState: Grass["state"]) {
+    let array: Grass[] | null = null;
+
+    switch (newState) {
+      case "alive":
+        array = this.aliveGrass;
+        break;
+      case "burning":
+        array = this.burningGrass;
+        break;
+      case "dead":
+        array = this.deadGrass;
+        break;
+      default:
+        console.error(
+          `Cannot update grass state - '${grassInfo.state}' is not a valid state`
+        );
+        return;
+    }
+
+    this.removeGrassFromStateArray(grassInfo);
+
+    grassInfo.state = newState;
+    array.push(grassInfo);
+  }
+
+  setFire(grassInfo: Grass) {
     if (grassInfo.state !== "alive") return;
 
     grassInfo.image?.destroy();
 
-    grassInfo.state = "burning";
+    this.setGrassState(grassInfo, "burning");
+
     grassInfo.image = this.boot.add
       .image(
         grassInfo.x * GRASS_SIZE + this.grassCanvasOffset.x,
@@ -74,10 +128,7 @@ export class GrassService {
       .setOrigin(0, 0)
       .setDisplaySize(GRASS_SIZE, GRASS_SIZE);
 
-    this.aliveGrass.splice(
-      aliveArrayIndex ?? this.aliveGrass.indexOf(grassInfo),
-      1
-    );
+    this.burningGrass.push(grassInfo);
   }
 
   setDeadTrue(grassInfo: Grass) {
@@ -85,7 +136,8 @@ export class GrassService {
 
     grassInfo.image?.destroy();
 
-    grassInfo.state = "dead";
+    this.setGrassState(grassInfo, "dead");
+
     grassInfo.image = this.boot.add
       .image(
         grassInfo.x * GRASS_SIZE + this.grassCanvasOffset.x,
@@ -103,7 +155,8 @@ export class GrassService {
 
     grassInfo.image?.destroy();
 
-    grassInfo.state = "alive";
+    this.setGrassState(grassInfo, "alive");
+
     grassInfo.image = this.boot.add
       .image(
         grassInfo.x * GRASS_SIZE + this.grassCanvasOffset.x,
@@ -116,6 +169,34 @@ export class GrassService {
     grassInfo.recoverCount++;
     grassInfo.hp = Math.max(grassInfo.hp, RECOVER_MIN_HP);
     this.aliveGrass.push(grassInfo);
+  }
+
+  resetGrass(grassInfo: Grass) {
+    // Only create a new image object if necessary
+    if (grassInfo) {
+      grassInfo.image?.destroy();
+      grassInfo.image = this.boot.add
+        .image(
+          grassInfo.x * GRASS_SIZE + this.grassCanvasOffset.x,
+          grassInfo.y * GRASS_SIZE + this.grassCanvasOffset.y,
+          "grass"
+        )
+        .setOrigin(0, 0)
+        .setDisplaySize(GRASS_SIZE, GRASS_SIZE);
+    }
+
+    grassInfo.state = "alive";
+    grassInfo.recoverCount = 0;
+    grassInfo.hp = GRASS_MAX_HP;
+    this.aliveGrass.push(grassInfo);
+  }
+
+  public resetAllGrass() {
+    for (let x = 0; x < GRASS_MAP_X; x++) {
+      for (let y = 0; y < GRASS_MAP_Y; y++) {
+        this.resetGrass(this.getGrassInfo(x, y));
+      }
+    }
   }
 
   getSize() {
@@ -155,7 +236,7 @@ export class GrassService {
         grassInfo.hp = CRITICAL_MODE_HP;
       }
 
-      this.setFire(grassInfo, aliveIndex);
+      this.setFire(grassInfo);
 
       // Increase the speed at which fire catches
       this.fireProbability = Math.min(
@@ -207,7 +288,7 @@ export class GrassService {
   create() {
     // this.boot.add.image(128, 128, "grass");
 
-    // Generate all grass objects
+    // Generate all grass images
     for (let x = 0; x < this.grassMap.length; x++) {
       for (let y = 0; y < this.grassMap[x].length; y++) {
         const grassInfo = this.grassMap[x][y];
