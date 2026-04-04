@@ -32,7 +32,11 @@ export class Boot extends Scene {
     this.scoreService = new ScoreService(this);
     this.bottomBarService = new BottomBarService(this, this.scoreService);
     this.backgroundService = new BackgroundService(this);
-    this.gameStateService = new GameStateService(this, this.grassService);
+    this.gameStateService = new GameStateService(
+      this,
+      this.grassService,
+      this.scoreService
+    );
   }
 
   create() {

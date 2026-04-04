@@ -185,7 +185,7 @@ export class GrassService {
         .setDisplaySize(GRASS_SIZE, GRASS_SIZE);
     }
 
-    grassInfo.state = "alive";
+    this.setGrassState(grassInfo, "alive");
     grassInfo.recoverCount = 0;
     grassInfo.hp = GRASS_MAX_HP;
     this.aliveGrass.push(grassInfo);
@@ -197,6 +197,10 @@ export class GrassService {
         this.resetGrass(this.getGrassInfo(x, y));
       }
     }
+  }
+
+  public resetProbabilities() {
+    this.fireProbability = INITIAL_FIRE_PROBABILITY;
   }
 
   getSize() {
@@ -220,8 +224,8 @@ export class GrassService {
     return this.grassMap[x][y];
   }
 
-  getAliveCount() {
-    return this.aliveGrass.length;
+  getDeadCount() {
+    return this.deadGrass.length;
   }
 
   update(dt: number) {
