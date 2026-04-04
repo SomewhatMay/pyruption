@@ -17,7 +17,7 @@ export class BrushService {
 
   private cursorRadius = CURSOR_DEFAULT_SIZE;
 
-  private brushCapacity = MAX_BRUSH_CAPACITY;
+  public brushCapacity = MAX_BRUSH_CAPACITY;
 
   constructor(private boot: Boot, private grassService: GrassService) {}
 
