@@ -8,8 +8,11 @@ import {
 } from "./BrushServiceConstants";
 import { GrassService } from "./GrassService";
 import { GRASS_SIZE } from "../LayoutConstants";
+import { GameStateService } from "./GameStateService";
 
 export class BrushService {
+  private gameStateService: GameStateService;
+
   private cursorPreview: Phaser.GameObjects.Ellipse;
 
   private pointerDown = false;
@@ -40,6 +43,10 @@ export class BrushService {
     mouseY -= this.grassService.grassCanvasOffset.y;
 
     if (this.brushCapacity <= 0) {
+      return;
+    }
+
+    if (this.gameStateService.isGameOver) {
       return;
     }
 
@@ -85,7 +92,8 @@ export class BrushService {
     }
   }
 
-  create() {
+  create(gameStateService: GameStateService) {
+    this.gameStateService = gameStateService;
     this.cursorPreview = this.boot.add
       .ellipse(
         100,

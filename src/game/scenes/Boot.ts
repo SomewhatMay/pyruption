@@ -53,7 +53,7 @@ export class Boot extends Scene {
 
     this.backgroundService.create();
     this.grassService.create();
-    this.brushService.create();
+    this.brushService.create(this.gameStateService);
     this.topBarService.create();
     this.bottomBarService.create();
     this.gameStateService.create();
