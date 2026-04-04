@@ -1,7 +1,7 @@
 import { clamp } from "../../../lib/clamp";
 import { Boot } from "../Boot";
 import {
-  CURSOR_DEFAULT_SIZE,
+  CURSOR_DEFAULT_RADIUS,
   CURSOR_PX_MULT,
   MAX_BRUSH_CAPACITY,
   MAX_BRUSH_SPEED,
@@ -15,7 +15,7 @@ export class BrushService {
   private pointerDown = false;
   private lastBrushUse = 0;
 
-  private cursorRadius = CURSOR_DEFAULT_SIZE;
+  private cursorRadius = CURSOR_DEFAULT_RADIUS;
 
   public brushCapacity = MAX_BRUSH_CAPACITY;
 
