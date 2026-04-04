@@ -1,7 +1,7 @@
 export const WIN_WIDTH = 1200;
 export const WIN_HEIGHT = 1000;
 
-export const TOP_BAR_HEIGHT = 48;
+export const TOP_BAR_HEIGHT = 56;
 
 // The minimum height of the bottom bar. The true height is
 // BOTTOM_BAR_MIN_HEIGHT + any remaining space due to rounding
