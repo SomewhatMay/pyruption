@@ -11,7 +11,7 @@ export class TopBarService {
 
     // Create general header
     this.boot.add
-      .rectangle(0, 0, topBarWidth, TOP_BAR_HEIGHT, 0x777777, 1)
+      .rectangle(0, 0, topBarWidth, TOP_BAR_HEIGHT, 0x555555, 1)
       .setOrigin(0, 0);
 
     this.boot.add
