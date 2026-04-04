@@ -35,7 +35,8 @@ export class Boot extends Scene {
     this.gameStateService = new GameStateService(
       this,
       this.grassService,
-      this.scoreService
+      this.scoreService,
+      this.brushService
     );
   }
 
@@ -57,7 +58,7 @@ export class Boot extends Scene {
 
   update(now: number, dt: number) {
     this.grassService.update(dt);
-    this.brushService.update();
+    this.brushService.update(dt);
     this.bottomBarService.update();
   }
 }

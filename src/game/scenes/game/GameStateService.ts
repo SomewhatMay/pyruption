@@ -6,6 +6,7 @@ import {
   WIN_HEIGHT,
   WIN_WIDTH,
 } from "../LayoutConstants";
+import { BrushService } from "./BrushService";
 import { GrassService } from "./GrassService";
 import { ScoreService } from "./ScoreService";
 
@@ -16,7 +17,8 @@ export class GameStateService {
   constructor(
     private boot: Boot,
     private grassService: GrassService,
-    private scoreService: ScoreService
+    private scoreService: ScoreService,
+    private brushService: BrushService
   ) {}
 
   create() {
@@ -154,10 +156,13 @@ export class GameStateService {
     this.scoreService.resetScore();
     this.grassService.resetAllGrass();
     this.grassService.resetProbabilities();
+    this.brushService.resetBrushCapacity();
+    this.brushService.setBrushVisible(true);
   }
 
   onGameOver() {
     this.scoreService.gameEndTime = this.boot.time.now;
+    this.brushService.setBrushVisible(false);
     this.isGameOver = true;
     this.showGameOverWindow();
   }

@@ -3,6 +3,7 @@ import { Boot } from "../Boot";
 import {
   CURSOR_DEFAULT_SIZE,
   CURSOR_PX_MULT,
+  MAX_BRUSH_CAPACITY,
   MAX_BRUSH_SPEED,
 } from "./BrushServiceConstants";
 import { GrassService } from "./GrassService";
@@ -16,11 +17,39 @@ export class BrushService {
 
   private cursorRadius = CURSOR_DEFAULT_SIZE;
 
+  private brushCapacity = MAX_BRUSH_CAPACITY;
+
   constructor(private boot: Boot, private grassService: GrassService) {}
 
-  onPointerDown(mouseX: number, mouseY: number) {
+  setBrushVisible(visible: boolean) {
+    this.cursorPreview.alpha = visible
+      ? this.brushCapacity > 0
+        ? 0.5
+        : 0.2
+      : 0;
+  }
+
+  resetBrushCapacity() {
+    this.brushCapacity = MAX_BRUSH_CAPACITY;
+    this.cursorPreview.fillColor = 0xffffff;
+    this.cursorPreview.alpha = 0.5;
+  }
+
+  onPointerDown(mouseX: number, mouseY: number, dt: number) {
     mouseX -= this.grassService.grassCanvasOffset.x;
     mouseY -= this.grassService.grassCanvasOffset.y;
+
+    if (this.brushCapacity <= 0) {
+      return;
+    }
+
+    // Reduce brush capacity
+    this.brushCapacity = Math.max(0, this.brushCapacity - 1 * dt);
+
+    if (this.brushCapacity <= 0) {
+      this.cursorPreview.fillColor = 0x000000;
+      this.cursorPreview.alpha = 0.2;
+    }
 
     // Create bounding box
     const cx = Math.floor(mouseX / GRASS_SIZE);
@@ -78,14 +107,15 @@ export class BrushService {
     this.boot.input.on("pointerup", () => (this.pointerDown = false));
   }
 
-  update() {
+  update(dt: number) {
     if (
       this.pointerDown &&
       this.boot.time.now - this.lastBrushUse > MAX_BRUSH_SPEED
     ) {
       this.onPointerDown(
         this.boot.input.mousePointer.x,
-        this.boot.input.mousePointer.y
+        this.boot.input.mousePointer.y,
+        dt
       );
 
       this.lastBrushUse = this.boot.time.now;
