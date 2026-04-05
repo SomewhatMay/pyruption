@@ -1,8 +1,10 @@
 import { Boot } from "../Boot";
 import { arcadeDefaultResized } from "../FontConstants";
 import {
+  BOTTOM_BAR_HEIGHT,
   GRASS_MAP_X,
   GRASS_MAP_Y,
+  TOP_BAR_HEIGHT,
   WIN_HEIGHT,
   WIN_WIDTH,
 } from "../LayoutConstants";
@@ -47,6 +49,18 @@ export class GameStateService {
     };
 
     gameOverLayer.add([
+      /* Cover Shadow */
+      this.boot.add
+        .rectangle(
+          0,
+          TOP_BAR_HEIGHT,
+          WIN_WIDTH,
+          WIN_HEIGHT - TOP_BAR_HEIGHT - BOTTOM_BAR_HEIGHT,
+          0x000000,
+          0.65
+        )
+        .setOrigin(0, 0),
+
       /* Background */
       this.boot.add.rectangle(
         WIN_WIDTH / 2,
@@ -84,10 +98,15 @@ export class GameStateService {
         .setOrigin(0.5, 0),
 
       this.boot.add
-        .text(WIN_WIDTH / 2 - GO_WINDOW_WIDTH * 0.25, WIN_HEIGHT / 2, "10000", {
-          ...arcadeDefaultResized(25),
-          color: "rgb(255,255,0)",
-        })
+        .text(
+          WIN_WIDTH / 2 - GO_WINDOW_WIDTH * 0.25,
+          WIN_HEIGHT / 2,
+          `${this.scoreService.score}`,
+          {
+            ...arcadeDefaultResized(25),
+            color: "rgb(255,255,0)",
+          }
+        )
         .setOrigin(0.5, 0.5),
 
       /* Time */
