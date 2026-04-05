@@ -1,3 +1,4 @@
+// game/scenes/game/GameStateService.ts
 import { Boot } from "../Boot";
 import { arcadeDefaultResized } from "../FontConstants";
 import {
@@ -25,10 +26,116 @@ export class GameStateService {
 
   create() {
     this.boot.input.setDefaultCursor("pointer");
-
     this.boot.events.on("grass-died", () => this.onGrassDied());
+    this.showWelcomeWindow();
+  }
 
-    this.startGame();
+  showWelcomeWindow() {
+    this.isPaused = true;
+    this.boot.input.setDefaultCursor("pointer");
+
+    const welcomeLayer = this.boot.add.layer();
+    welcomeLayer.setDepth(15);
+
+    const W_WIDTH = 480;
+    const W_HEIGHT = 380;
+    const cx = WIN_WIDTH / 2;
+    const cy = WIN_HEIGHT / 2;
+    const top = cy - W_HEIGHT / 2;
+
+    const onPlay = () => {
+      welcomeLayer.destroy();
+      this.startGame();
+    };
+
+    const tips = [
+      {
+        title: "FIRE SPREADS!",
+        body: "Flames randomly ignite and spread to nearby\ntiles. Don't let the whole field burn down!",
+      },
+      {
+        title: "CLICK & HOLD TO SPRAY",
+        body: "Move your cursor over burning tiles and\nhold the mouse button to extinguish fires.",
+      },
+      {
+        title: "WATCH YOUR EXTINGUISHER",
+        body: "Spray capacity depletes as you use it.\nDon't let the bar at the bottom run out!",
+      },
+    ];
+
+    const items: Phaser.GameObjects.GameObject[] = [
+      /* Cover shadow */
+      this.boot.add
+        .rectangle(
+          0,
+          TOP_BAR_HEIGHT,
+          WIN_WIDTH,
+          WIN_HEIGHT - TOP_BAR_HEIGHT - BOTTOM_BAR_HEIGHT,
+          0x000000,
+          0.65
+        )
+        .setOrigin(0, 0),
+
+      /* Window outer border */
+      this.boot.add.rectangle(cx, cy, W_WIDTH + 10, W_HEIGHT + 10, 0x777777),
+
+      /* Window background */
+      this.boot.add.rectangle(cx, cy, W_WIDTH, W_HEIGHT, 0x999999),
+
+      /* Title */
+      this.boot.add
+        .text(cx, top + 18, "HOW TO PLAY", arcadeDefaultResized(24))
+        .setOrigin(0.5, 0),
+
+      /* Divider */
+      this.boot.add
+        .rectangle(cx, top + 52, W_WIDTH - 40, 3, 0x777777)
+        .setOrigin(0.5, 0),
+    ];
+
+    /* Tips — each 80px apart */
+    tips.forEach((tip, i) => {
+      const tipY = top + 68 + i * 80;
+      items.push(
+        this.boot.add
+          .text(
+            cx - W_WIDTH / 2 + 20,
+            tipY,
+            tip.title,
+            arcadeDefaultResized(13)
+          )
+
+          .setOrigin(0, 0),
+        this.boot.add
+          .text(
+            cx - W_WIDTH / 2 + 20,
+            tipY + 22,
+            tip.body,
+            arcadeDefaultResized(10)
+          )
+          .setLineSpacing(7)
+          .updateText()
+          .setOrigin(0, 0)
+      );
+    });
+
+    /* Play button — mirrors game over Restart button pattern */
+    const BTN_Y = cy + W_HEIGHT / 2;
+    items.push(
+      this.boot.add
+        .rectangle(cx, BTN_Y - 5, W_WIDTH - 20, 58, 0x888888)
+        .setOrigin(0.5, 1)
+        .setInteractive()
+        .on("pointerdown", () => onPlay()),
+      this.boot.add
+        .rectangle(cx, BTN_Y - 10, W_WIDTH - 30, 48, 0xaaaaaa)
+        .setOrigin(0.5, 1),
+      this.boot.add
+        .text(cx, BTN_Y - 18, "PLAY GAME", arcadeDefaultResized(30))
+        .setOrigin(0.5, 1)
+    );
+
+    welcomeLayer.add(items);
   }
 
   showGameOverWindow() {
@@ -41,10 +148,7 @@ export class GameStateService {
     const GO_WINDOW_HEIGHT = 200;
 
     const onRestart = () => {
-      // Clean up all UI elements
-
       gameOverLayer.destroy();
-
       this.startGame();
     };
 
