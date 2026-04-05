@@ -30,8 +30,18 @@ export class GameStateService {
     this.showWelcomeWindow();
   }
 
+  setIsPaused(newValue: boolean) {
+    this.isPaused = newValue;
+
+    if (this.isPaused) {
+      this.brushService.setBrushVisible(false);
+    } else {
+      this.brushService.setBrushVisible(true);
+    }
+  }
+
   showWelcomeWindow() {
-    this.isPaused = true;
+    this.setIsPaused(true);
     this.boot.input.setDefaultCursor("pointer");
 
     const welcomeLayer = this.boot.add.layer();
@@ -271,7 +281,7 @@ export class GameStateService {
 
   startGame() {
     this.isGameOver = false;
-    this.isPaused = false;
+    this.setIsPaused(false);
 
     this.boot.input.setDefaultCursor("none");
 
