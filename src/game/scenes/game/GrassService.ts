@@ -25,7 +25,7 @@ export class GrassService {
   private burningGrass: Grass[];
   private deadGrass: Grass[];
 
-  private fireProbability = INITIAL_FIRE_PROBABILITY;
+  public fireProbability = INITIAL_FIRE_PROBABILITY;
 
   public readonly grassCanvasOffset = {
     x: HORIZONTAL_GRASS_PAD,
@@ -147,7 +147,7 @@ export class GrassService {
       .setOrigin(0, 0)
       .setDisplaySize(GRASS_SIZE, GRASS_SIZE);
 
-    this.boot.events.emit("grass-died");
+    this.boot.events.emit("grass-died", grassInfo);
   }
 
   extinguishFire(grassInfo: Grass) {
@@ -169,6 +169,8 @@ export class GrassService {
     grassInfo.recoverCount++;
     grassInfo.hp = Math.max(grassInfo.hp, RECOVER_MIN_HP);
     this.aliveGrass.push(grassInfo);
+
+    this.boot.events.emit("grass-extinguished", grassInfo);
   }
 
   resetGrass(grassInfo: Grass) {

@@ -1,21 +1,24 @@
 import { clamp } from "../../../lib/clamp";
 import { Boot } from "../Boot";
 import {
-  CURSOR_DEFAULT_SIZE,
+  CURSOR_DEFAULT_RADIUS,
   CURSOR_PX_MULT,
   MAX_BRUSH_CAPACITY,
   MAX_BRUSH_SPEED,
 } from "./BrushServiceConstants";
 import { GrassService } from "./GrassService";
 import { GRASS_SIZE } from "../LayoutConstants";
+import { GameStateService } from "./GameStateService";
 
 export class BrushService {
+  private gameStateService: GameStateService;
+
   private cursorPreview: Phaser.GameObjects.Ellipse;
 
   private pointerDown = false;
   private lastBrushUse = 0;
 
-  private cursorRadius = CURSOR_DEFAULT_SIZE;
+  private cursorRadius = CURSOR_DEFAULT_RADIUS;
 
   public brushCapacity = MAX_BRUSH_CAPACITY;
 
@@ -40,6 +43,10 @@ export class BrushService {
     mouseY -= this.grassService.grassCanvasOffset.y;
 
     if (this.brushCapacity <= 0) {
+      return;
+    }
+
+    if (this.gameStateService.isGameOver) {
       return;
     }
 
@@ -85,7 +92,8 @@ export class BrushService {
     }
   }
 
-  create() {
+  create(gameStateService: GameStateService) {
+    this.gameStateService = gameStateService;
     this.cursorPreview = this.boot.add
       .ellipse(
         100,

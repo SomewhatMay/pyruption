@@ -15,6 +15,8 @@ type BrushCapacityUIInfo = {
 
 export class BottomBarService {
   private timeText: Phaser.GameObjects.Text;
+  private scoreText: Phaser.GameObjects.Text;
+
   private brushCapacityUIInfo: BrushCapacityUIInfo;
 
   constructor(
@@ -116,7 +118,7 @@ export class BottomBarService {
       )
       .setOrigin(1, 0);
 
-    this.boot.add
+    this.scoreText = this.boot.add
       .text(
         bottomBarWidth - TIMER_CARD_WIDTH - commonPad * 3 - 4,
         BOTTOM_BAR_Y + commonPad + SCORE_CARD_HEIGHT - SCORE_CARD_Y_PAD,
@@ -205,6 +207,8 @@ export class BottomBarService {
     this.timeText.setText(
       `${(this.scoreService.getElapsedTime() / 1000).toFixed(2)}`
     );
+
+    this.scoreText.setText(`${this.scoreService.score}`);
 
     const t = this.brushService.brushCapacity / MAX_BRUSH_CAPACITY;
     this.brushCapacityUIInfo.rect.setSize(
