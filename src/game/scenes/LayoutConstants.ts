@@ -8,7 +8,7 @@ export const TOP_BAR_HEIGHT = 56;
 // of the number of grass blocks
 const BOTTOM_BAR_MIN_HEIGHT = 50;
 
-export const GRASS_MAP_X = 11;
+export const GRASS_MAP_X = 3;
 export const GRASS_SIZE = Math.floor(WIN_WIDTH / GRASS_MAP_X); // px, length and width (square)
 export const GRASS_MAP_Y = Math.floor(
   (WIN_HEIGHT - TOP_BAR_HEIGHT - BOTTOM_BAR_MIN_HEIGHT) / GRASS_SIZE

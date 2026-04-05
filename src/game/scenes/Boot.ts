@@ -29,7 +29,7 @@ export class Boot extends Scene {
     this.grassService = new GrassService(this);
     this.brushService = new BrushService(this, this.grassService);
     this.topBarService = new TopBarService(this);
-    this.scoreService = new ScoreService(this);
+    this.scoreService = new ScoreService(this, this.grassService);
     this.bottomBarService = new BottomBarService(
       this,
       this.scoreService,
