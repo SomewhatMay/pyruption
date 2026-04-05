@@ -17,7 +17,7 @@ const phasermsg = () => {
 }   
 
 export default defineConfig({
-    base: '/pyruption',
+    base: '/pyruption/',
     logLevel: 'warning',
     build: {
         rollupOptions: {
