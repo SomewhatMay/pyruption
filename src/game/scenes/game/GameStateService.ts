@@ -103,7 +103,7 @@ export class GameStateService {
         .setOrigin(0.5, 0),
     ];
 
-    /* Tips — each 80px apart */
+    /* Tips - each 80px apart */
     tips.forEach((tip, i) => {
       const tipY = top + 68 + i * 80;
       items.push(
@@ -129,7 +129,7 @@ export class GameStateService {
       );
     });
 
-    /* Play button — mirrors game over Restart button pattern */
+    /* Play button - mirrors game over Restart button pattern */
     const BTN_Y = cy + W_HEIGHT / 2;
     items.push(
       this.boot.add

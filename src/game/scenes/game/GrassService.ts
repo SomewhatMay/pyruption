@@ -2,8 +2,8 @@ import { clamp } from "../../../lib/clamp";
 import { randInt } from "../../../lib/randint";
 import { Boot } from "../Boot";
 import {
-  FIRE_PROBABILITY_INCREASE_RATE,
   FIRE_PROBABILITY_MAX,
+  FIRE_PROBABILITY_RAMP_DURATION,
   Grass,
   GRASS_MAX_HP,
   INITIAL_FIRE_PROBABILITY,
@@ -26,6 +26,10 @@ export class GrassService {
   private deadGrass: Grass[];
 
   public fireProbability = INITIAL_FIRE_PROBABILITY;
+
+  // Tracks how long the current round has been running (ms).
+  // Used to drive the time-based probability ramp.
+  private elapsedTime = 0;
 
   public readonly grassCanvasOffset = {
     x: HORIZONTAL_GRASS_PAD,
@@ -127,8 +131,6 @@ export class GrassService {
       )
       .setOrigin(0, 0)
       .setDisplaySize(GRASS_SIZE, GRASS_SIZE);
-
-    this.burningGrass.push(grassInfo);
   }
 
   setDeadTrue(grassInfo: Grass) {
@@ -168,7 +170,6 @@ export class GrassService {
 
     grassInfo.recoverCount++;
     grassInfo.hp = Math.max(grassInfo.hp, RECOVER_MIN_HP);
-    this.aliveGrass.push(grassInfo);
 
     this.boot.events.emit("grass-extinguished", grassInfo);
   }
@@ -190,7 +191,6 @@ export class GrassService {
     this.setGrassState(grassInfo, "alive");
     grassInfo.recoverCount = 0;
     grassInfo.hp = GRASS_MAX_HP;
-    this.aliveGrass.push(grassInfo);
   }
 
   public resetAllGrass() {
@@ -203,6 +203,7 @@ export class GrassService {
 
   public resetProbabilities() {
     this.fireProbability = INITIAL_FIRE_PROBABILITY;
+    this.elapsedTime = 0;
   }
 
   getSize() {
@@ -231,27 +232,36 @@ export class GrassService {
   }
 
   update(dt: number) {
+    // Time-based probability ramp
+    // Probability follows a smoothstep curve: 3t^2-2t^2 where t = elapsed/duration.
+    // This gives a forgiving warm-up, a noticeable mid-game ramp, and a soft
+    // plateau near the cap, all independent of fire cascades.
+    //
+    //   t=0   (  0 s) → p ~= 0.008  (~0.5 fires/s at 60 fps)
+    //   t=0.5 ( 45 s) → p ~= 0.039  (~2.3 fires/s)
+    //   t=1.0 ( 90 s) → p = 0.070  (~4.2 fires/s: cap)
+    this.elapsedTime += dt;
+    const t = Math.min(this.elapsedTime / FIRE_PROBABILITY_RAMP_DURATION, 1);
+    const smoothT = t * t * (3 - 2 * t); // smoothstep
+    this.fireProbability =
+      INITIAL_FIRE_PROBABILITY +
+      (FIRE_PROBABILITY_MAX - INITIAL_FIRE_PROBABILITY) * smoothT;
+
+    // ── Random ignition ────────────────────────────────────────────────────────
     if (this.aliveGrass.length > 0 && Math.random() < this.fireProbability) {
-      // Pick a random grass block
       const aliveIndex = randInt(0, this.aliveGrass.length);
       const grassInfo = this.aliveGrass[aliveIndex];
 
-      // If the block has been recovered too many times, provide a near-impossible
-      // opportunity to recover the block (through a really low HP)
+      // If the block has been recovered too many times, give it a very low HP
+      // so the player must act quickly, but still within human reaction time.
       if (grassInfo.recoverCount > MAX_RECOVER_COUNT) {
         grassInfo.hp = CRITICAL_MODE_HP;
       }
 
       this.setFire(grassInfo);
-
-      // Increase the speed at which fire catches
-      this.fireProbability = Math.min(
-        this.fireProbability * FIRE_PROBABILITY_INCREASE_RATE,
-        FIRE_PROBABILITY_MAX
-      );
     }
 
-    // Spread fire & reduce hp
+    // ── Spread fire & reduce HP ────────────────────────────────────────────────
     for (let x = 0; x < this.grassMap.length; x++) {
       for (let y = 0; y < this.grassMap[x].length; y++) {
         const grassInfo = this.getGrassInfo(x, y);
@@ -292,8 +302,6 @@ export class GrassService {
   }
 
   create() {
-    // this.boot.add.image(128, 128, "grass");
-
     // Generate all grass images
     for (let x = 0; x < this.grassMap.length; x++) {
       for (let y = 0; y < this.grassMap[x].length; y++) {
